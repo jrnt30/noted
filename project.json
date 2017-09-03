@@ -1,0 +1,9 @@
+{
+  "name": "noted-apex",
+  "description": "Simple bookmarking tool ",
+  "memory": 128,
+  "timeout": 5,
+  "role": "arn:aws:iam::817491895887:role/noted-apex_lambda_function",
+  "environment": {},
+  "defaultEnvironment": "dev"
+}
