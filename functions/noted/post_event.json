@@ -32,7 +32,7 @@
       "httpMethod": "POST",
       "apiId": "EXAMPLE"
     },
-    "body": "{\"url\":\"http://cnn.com\"}",
+    "body": "{\"url\": \"http://cnn.com\",\"user_id\": \"TestUsername\",\"user_title\": \"CNN Headlines\",\"user_description\": \"A larger description can be used for other things\"}",
     "isBase64Encoded": false
   }
 }

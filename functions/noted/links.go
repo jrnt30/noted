@@ -10,17 +10,19 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/satori/go.uuid"
+
+	"github.com/jrnt30/noted-apex/pkg/noted"
 )
 
 type LinkSaver interface {
-	SaveLink(link *Link) error
+	SaveLink(link *noted.Link) error
 }
 
 type DynamoLinkSaver struct {
 	dynamo *dynamodb.DynamoDB
 }
 
-func (d DynamoLinkSaver) SaveLink(link *Link) error {
+func (d DynamoLinkSaver) SaveLink(link *noted.Link) error {
 	link.ID = uuid.NewV4().String()
 	link.CreatedAt = time.Now()
 	link.UpdatedAt = time.Now()
@@ -42,7 +44,7 @@ func (d DynamoLinkSaver) SaveLink(link *Link) error {
 		return err
 	}
 
-	newLink := &Link{}
+	newLink := &noted.Link{}
 	err = dynamodbattribute.UnmarshalMap(res.Attributes, newLink)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error unmarshalling from dynamo: %+v", err)

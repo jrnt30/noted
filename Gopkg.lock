@@ -4,7 +4,7 @@
 [[projects]]
   branch = "master"
   name = "github.com/apex/go-apex"
-  packages = [".","proxy"]
+  packages = [".","dynamo","proxy"]
   revision = "6e19883b04761c5930e32bf2f80e02ad0e3a1d4e"
 
 [[projects]]
@@ -20,10 +20,28 @@
   version = "v1.28.2"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/hashicorp/errwrap"
+  packages = ["."]
+  revision = "7554cd9344cec97297fa6649b055a8c98c2a1e55"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/hashicorp/go-multierror"
+  packages = ["."]
+  revision = "83588e72410abfbe4df460eeb6f30841ae47d4c4"
+
+[[projects]]
   name = "github.com/jmespath/go-jmespath"
   packages = ["."]
   revision = "3433f3ea46d9f8019119e7dd41274e112a2359a9"
   version = "0.2.2"
+
+[[projects]]
+  name = "github.com/nlopes/slack"
+  packages = ["."]
+  revision = "c86337c0ef2486a15edd804355d9c73d2f2caed1"
+  version = "v0.1.0"
 
 [[projects]]
   name = "github.com/satori/go.uuid"
@@ -31,9 +49,15 @@
   revision = "879c5887cd475cd7864858769793b2ceb0d44feb"
   version = "v1.1.0"
 
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["websocket"]
+  revision = "66aacef3dd8a676686c7ae3716979581e8b03c47"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "715ef5f986a70e925d84fe229bf57db997dd8cd4da1ae9079c6e98c930285071"
+  inputs-digest = "4a4e1ae5149ffcbda2d30925fc0cf40252516c2d0750a4654ea87dedddde4dc7"
   solver-name = "gps-cdcl"
   solver-version = 1

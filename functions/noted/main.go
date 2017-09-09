@@ -6,28 +6,12 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/apex/go-apex"
 	"github.com/apex/go-apex/proxy"
+
+	"github.com/jrnt30/noted-apex/pkg/noted"
 )
-
-type Link struct {
-	ID          string    `json:"id" dynamodbav:"ID"`
-	URL         string    `json:"url" dynamodbav:"URL"`
-	CreatedBy   string    `json:"user_id" dynamodbav:"CreatedBy"`
-	Title       string    `json:"user_title" dynamodbav:"Title"`
-	Description string    `json:"user_description" dynamodbav:"Description"`
-	CreatedAt   time.Time `json:"created_at" dynamodbav:"CreatedAt"`
-	UpdatedAt   time.Time `json:"updated_at" dynamodbav:"UpdatedAt"`
-	DeletedAt   time.Time `json:"deleted_at" dynamodbav:"DeletedAt"`
-}
-
-type User struct {
-	ID    int    `json:"id"`
-	Name  string `json:"user_name"`
-	Token string `json:"token"`
-}
 
 func main() {
 	ls, err := NewDynamoLinkSaver()
@@ -57,7 +41,7 @@ func postLink(ls LinkSaver, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	link := &Link{}
+	link := &noted.Link{}
 	err = json.Unmarshal(body, link)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error())
