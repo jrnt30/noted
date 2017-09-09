@@ -14,25 +14,26 @@ import (
 	"github.com/jrnt30/noted-apex/pkg/noted"
 )
 
-type LinkSaver interface {
-	SaveLink(link *noted.Link) error
-}
-
 type DynamoLinkSaver struct {
-	dynamo *dynamodb.DynamoDB
+	enabled bool
+	dynamo  *dynamodb.DynamoDB
 }
 
-func (d DynamoLinkSaver) SaveLink(link *noted.Link) error {
+var _ noted.LinkProcessor = &DynamoLinkSaver{}
+
+func (d *DynamoLinkSaver) Enabled() bool {
+	return d.enabled
+}
+
+func (d *DynamoLinkSaver) ProcessLink(link *noted.Link) error {
 	link.ID = uuid.NewV4().String()
 	link.CreatedAt = time.Now()
 	link.UpdatedAt = time.Now()
 
-	av, err := dynamodbattribute.MarshalMap(&link)
+	av, err := dynamodbattribute.MarshalMap(link)
 	if err != nil {
 		return err
 	}
-
-	fmt.Fprint(os.Stderr, av)
 
 	res, err := d.dynamo.PutItem(&dynamodb.PutItemInput{
 		TableName: aws.String("dev-NotedLinks"),
@@ -45,24 +46,19 @@ func (d DynamoLinkSaver) SaveLink(link *noted.Link) error {
 	}
 
 	newLink := &noted.Link{}
-	err = dynamodbattribute.UnmarshalMap(res.Attributes, newLink)
-	if err != nil {
+	if err = dynamodbattribute.UnmarshalMap(res.Attributes, newLink); err != nil {
 		fmt.Fprintf(os.Stderr, "Error unmarshalling from dynamo: %+v", err)
 		return err
 	}
 
-	return err
+	return nil
 }
 
-func NewDynamoLinkSaver() (LinkSaver, error) {
+func NewDynamoLinkSaver() DynamoLinkSaver {
 	session, err := session.NewSession()
-	if err != nil {
-		return nil, err
-	}
 
-	ls := DynamoLinkSaver{
-		dynamo: dynamodb.New(session),
+	return DynamoLinkSaver{
+		enabled: err != nil,
+		dynamo:  dynamodb.New(session),
 	}
-
-	return ls, nil
 }

@@ -18,3 +18,8 @@ type User struct {
 	Name  string `json:"user_name"`
 	Token string `json:"token"`
 }
+
+type LinkProcessor interface {
+	Enabled() bool
+	ProcessLink(*Link) error
+}
