@@ -1,66 +1,46 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net/http"
-	"os"
+	"log"
 
-	"github.com/apex/go-apex"
-	"github.com/apex/go-apex/proxy"
-
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/jrnt30/noted-apex/pkg/noted"
 )
 
-func main() {
-	ls := NewDynamoLinkSaver()
+var ls DynamoLinkSaver
 
-	srv := http.NewServeMux()
-	srv.HandleFunc("/", http.NotFound)
-	srv.HandleFunc("/links", func(w http.ResponseWriter, r *http.Request) {
-		if ls.Enabled() {
-			http.Error(w, "error encountered generating a link saver", http.StatusInternalServerError)
-			return
-		}
-
-		switch r.Method {
-		case http.MethodPost:
-			postLink(&ls, w, r)
-		default:
-			http.NotFound(w, r)
-		}
-	})
-
-	apex.Handle(proxy.Serve(srv))
+func init() {
+	ls = NewDynamoLinkSaver()
 }
 
-func postLink(ls noted.LinkProcessor, w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
-	if err != nil {
-		http.Error(w, "Unable to read body", http.StatusBadRequest)
-		return
-	}
+func main() {
+	lambda.Start(handleLinkPost)
+}
 
+func handleLinkPost(context context.Context, r events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	link := &noted.Link{}
-	err = json.Unmarshal(body, link)
+	err := json.Unmarshal([]byte(r.Body), link)
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, err.Error())
-		http.Error(w, fmt.Sprintf("Unable to unmarshall respose properly: %v", body), http.StatusBadRequest)
-		return
+		log.Printf(err.Error())
+		return events.APIGatewayProxyResponse{StatusCode: 500}, fmt.Errorf("Unable to decode the request properly for a Link posting: %v", r.RequestContext.RequestID)
 	}
 
 	err = ls.ProcessLink(link)
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, err.Error())
-		http.Error(w, "Error persisting link", http.StatusInternalServerError)
-		return
+		log.Printf(err.Error())
+		return events.APIGatewayProxyResponse{StatusCode: 500}, fmt.Errorf("Error persisiting link to dynamo: %v", err)
 	}
 
 	res, _ := json.Marshal(link)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(res)
+	return events.APIGatewayProxyResponse{
+		StatusCode: 200,
+		Body:       string(res),
+		Headers:    map[string]string{"Content-Type": "application/json"},
+	}, nil
 }

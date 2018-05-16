@@ -1,25 +1,30 @@
 package main
 
 import (
-	"github.com/apex/go-apex"
-	"github.com/apex/go-apex/dynamo"
+	"github.com/aws/aws-lambda-go/lambda"
 
-	"github.com/jrnt30/noted-apex/pkg/utils"
+	"github.com/jrnt30/noted-apex/pkg/dynamo"
 )
 
+var notifier SlackNotifier
+
+func init() {
+	notifier = NewSlackNotifier()
+}
+
 func main() {
-	notifier := NewSlackNotifier()
+	lambda.Start(handleDyanmoEvent)
+}
 
-	dynamo.HandleFunc(func(event *dynamo.Event, context *apex.Context) error {
-		if !notifier.enabled {
-			return nil
-		}
+func handleDyanmoEvent(e dynamo.DynamoEvent) error {
+	if !notifier.enabled {
+		return nil
+	}
 
-		var errors error
-		for _, link := range utils.UnmarshalLinks(event) {
-			notifier.ProcessLink(&link)
-		}
+	var errors error
+	for _, link := range dynamo.UnmarshalLinks(e) {
+		notifier.ProcessLink(&link)
+	}
 
-		return errors
-	})
+	return errors
 }

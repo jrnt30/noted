@@ -1,22 +1,28 @@
 package main
 
 import (
-	"github.com/apex/go-apex"
-	"github.com/apex/go-apex/dynamo"
+	"github.com/aws/aws-lambda-go/lambda"
 
-	"github.com/jrnt30/noted-apex/pkg/utils"
+	"github.com/jrnt30/noted-apex/pkg/dynamo"
 )
 
-func main() {
-	processor := NewESIndexer()
-	dynamo.HandleFunc(func(event *dynamo.Event, ctx *apex.Context) error {
-		if !processor.Enabled() {
-			return nil
-		}
+var processor EsIndexer
 
-		for _, rec := range utils.UnmarshalLinks(event) {
-			processor.ProcessLink(&rec)
-		}
+func init() {
+	processor = NewESIndexer()
+}
+
+func main() {
+	lambda.Start(handleLinkIndexing)
+}
+
+func handleLinkIndexing(event dynamo.Event) error {
+	if !processor.Enabled() {
 		return nil
-	})
+	}
+
+	for _, rec := range dynamo.UnmarshalLinks(event) {
+		processor.ProcessLink(&rec)
+	}
+	return nil
 }

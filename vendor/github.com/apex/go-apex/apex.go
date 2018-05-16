@@ -8,7 +8,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"sync"
 )
 
 // Handler handles Lambda events.
@@ -63,12 +62,17 @@ func HandleFunc(h HandlerFunc) {
 
 // input from the node shim.
 type input struct {
+	// ID is an itentifier that is boomeranged back to the called,
+	// to allow for concurrent commands
+	ID      string          `json:"id,omitempty"`
 	Event   json.RawMessage `json:"event"`
 	Context *Context        `json:"context"`
 }
 
 // output for the node shim.
 type output struct {
+	// The boomeranged ID from the caller
+	ID    string      `json:"id,omitempty"`
 	Error string      `json:"error,omitempty"`
 	Value interface{} `json:"value,omitempty"`
 }
@@ -82,78 +86,30 @@ type manager struct {
 
 // Start the manager.
 func (m *manager) Start() {
-	m.output(m.handle(m.input()))
-}
-
-// input reads from the Reader and decodes JSON messages.
-func (m *manager) input() <-chan *input {
 	dec := json.NewDecoder(m.Reader)
-	ch := make(chan *input)
-
-	go func() {
-		defer close(ch)
-
-		for {
-			msg := new(input)
-			err := dec.Decode(msg)
-
-			if err == io.EOF {
-				break
-			}
-
-			if err != nil {
-				log.Printf("error decoding input: %s", err)
-				break
-			}
-
-			ch <- msg
-		}
-	}()
-
-	return ch
-}
-
-// handle invokes the handler and sends the response to the output channel
-func (m *manager) handle(in <-chan *input) <-chan *output {
-	ch := make(chan *output)
-	var wg sync.WaitGroup
-
-	go func() {
-		defer close(ch)
-
-		for msg := range in {
-			msg := msg
-			wg.Add(1)
-
-			go func() {
-				defer wg.Done()
-				ch <- m.invoke(msg)
-			}()
-		}
-
-		wg.Wait()
-	}()
-
-	return ch
-}
-
-// invoke calls the handler with `msg`.
-func (m *manager) invoke(msg *input) *output {
-	v, err := m.Handler.Handle(msg.Event, msg.Context)
-
-	if err != nil {
-		return &output{Error: err.Error()}
-	}
-
-	return &output{Value: v}
-}
-
-// output encodes the JSON messages and writes to the Writer.
-func (m *manager) output(ch <-chan *output) {
 	enc := json.NewEncoder(m.Writer)
 
-	for msg := range ch {
-		if err := enc.Encode(msg); err != nil {
+	for {
+		var msg input
+		err := dec.Decode(&msg)
+
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			log.Printf("error decoding input: %s", err)
+			break
+		}
+
+		v, err := m.Handler.Handle(msg.Event, msg.Context)
+		out := output{ID: msg.ID, Value: v}
+
+		if err != nil {
+			out.Error = err.Error()
+		}
+
+		if err := enc.Encode(out); err != nil {
 			log.Printf("error encoding output: %s", err)
 		}
 	}

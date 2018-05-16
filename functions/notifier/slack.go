@@ -5,9 +5,8 @@ import (
 	"os"
 
 	"github.com/hashicorp/go-multierror"
-	"github.com/nlopes/slack"
-
 	"github.com/jrnt30/noted-apex/pkg/noted"
+	"github.com/nlopes/slack"
 )
 
 const (
@@ -16,19 +15,24 @@ const (
 	LINK_COLOR    = "#94F89E"
 )
 
+// Ensures that SlackNotifier continues to implement the Notifier interface
+var _ noted.LinkProcessor = &SlackNotifier{}
+
+// SlackNotifier allows for the distribution of a
+// noted.Link's core data to be broadcast to a Slack Channel
 type SlackNotifier struct {
 	channel string
 	client  *slack.Client
 	enabled bool
 }
 
-// Ensures that SlackNotifier continues to implement the Notifier interface
-var _ noted.LinkProcessor = &SlackNotifier{}
-
+// Enabled indicates if Slack notification is enabled.
 func (s *SlackNotifier) Enabled() bool {
 	return s.enabled
 }
 
+// ProcessLink holds the meat of the SlackNotifier's responsibility
+// by managing the posting of the message.
 func (s *SlackNotifier) ProcessLink(link *noted.Link) error {
 	var errors error
 	_, _, err := s.client.PostMessage(s.channel, "", slack.PostMessageParameters{
@@ -61,6 +65,8 @@ func convertToAttachment(link *noted.Link) slack.Attachment {
 	}
 }
 
+// NewSlackNotifier leverages environment variables to load the
+// slack channel and token information to post
 func NewSlackNotifier() SlackNotifier {
 	token := os.Getenv(SLACK_TOKEN)
 	channel := os.Getenv(SLACK_CHANNEL)
