@@ -1,0 +1,186 @@
+<!doctype html>
+<html>
+
+<head>
+  <style>
+    body {
+      min-width: 357px;
+      overflow-x: hidden;
+    }
+
+    #favicon {
+      display: inline-block;
+      width: 25px;
+      height: 25px;
+      vertical-align: bottom;
+    }
+
+    #title {
+      display: inline-block;
+      clear: right;
+      height: 25px;
+      padding: 5px 10px;
+      box-sizing: border-box;
+      width: 325px;
+      border: none;
+      border-bottom: 1px dashed #eee;
+      cursor: pointer;
+    }
+
+    #title:focus {
+      outline: none;
+      border-bottom: 1px dashed #ccc;
+    }
+
+    #description {
+      border: none;
+    }
+
+    #description:focus {
+      outline: none;
+    }
+
+    .header-line {
+      margin-bottom: 10px;
+    }
+
+    .btn-container {
+      width: 100%;
+      text-align: right;
+    }
+
+    #description {
+      width: 100%;
+      height: 100px;
+      resize: none;
+    }
+
+    #post {
+      border: none;
+      color: white;
+      background: #61ae24;
+      border-right: 1px solid #478119;
+      border-bottom: 1px solid #478119;
+    }
+
+    #post:focus {
+      outline: none;
+    }
+
+    #post:active {
+      border-right: none;
+      border-bottom: none;
+      border-top: 1px solid white;
+      border-left: 1px solid white;
+    }
+
+    #post[disabled] {
+      background: #ccc;
+      color: #999;
+      border-right: 1px solid #aaa;
+      border-bottom: 1px solid #aaa;
+    }
+
+    #flash-message {
+      color: red;
+    }
+
+    #logged-in,
+    #not-logged-in {
+      display: none;
+    }
+
+    /* Stolen from the Auth-0 Chrome Extension example */
+
+		.hidden {
+				display: none;
+		}
+
+    .loading {
+      transform: translate(-50%, -50%);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+    }
+
+    .loading-bar {
+      display: inline-block;
+      width: 2px;
+      height: 16px;
+      border-radius: 0px;
+      animation: loading 1s ease-in-out infinite;
+    }
+
+    .loading-bar:nth-child(1) {
+      background-color: #eb5424;
+      animation-delay: 0;
+    }
+
+    .loading-bar:nth-child(2) {
+      background-color: #44c7f4;
+      animation-delay: 0.09s;
+    }
+
+    .loading-bar:nth-child(3) {
+      background-color: #16214d;
+      animation-delay: .18s;
+    }
+
+    .loading-bar:nth-child(4) {
+      background-color: #eaca2c;
+      animation-delay: .27s;
+    }
+
+    @keyframes loading {
+      0% {
+        transform: scale(1);
+      }
+      20% {
+        transform: scale(1, 2.2);
+      }
+      40% {
+        transform: scale(1);
+      }
+    }
+  </style>
+
+  <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: http://developer.chrome.com/extensions/contentSecurityPolicy.html
+     -->
+  <script src="env.js"></script>
+  <script src="js/LocalStorage.js"></script>
+  <script src="js/Post.js"></script>
+  <script src="js/User.js"></script>
+  <script src="js/UserService.js"></script>
+  <script src="js/PostView.js"></script>
+  <script src="node_modules/jwt-decode/build/jwt-decode.js"></script>
+  <script src="node_modules/auth0-chrome/dist/auth0chrome.min.js"></script>
+  <script src="js/popup.js"></script>
+</head>
+
+<body>
+  <div id="logged-in">
+    <div class="header-line">
+      <img id="favicon" />
+      <input type="text" id="title" placeholder="title" />
+    </div>
+    <textarea id="description" placeholder="Description..."></textarea>
+    <div class="btn-container">
+      <input type="button" id="post" value="Post Link" />
+    </div>
+    <div id="flash-message"></div>
+  </div>
+  <div class="loading hidden">
+    <div class="loading-bar"></div>
+    <div class="loading-bar"></div>
+    <div class="loading-bar"></div>
+    <div class="loading-bar"></div>
+  </div>
+  <div id="not-logged-in">
+    <button id="login" class="btn btn-success login-button">Log In With Auth0</button>
+  </div>
+</body>
+</html>

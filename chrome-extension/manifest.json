@@ -1,0 +1,31 @@
+{
+  "manifest_version": 2,
+
+  "name": "Footnotes",
+  "description": "An open source Inc clone.",
+
+  "version": "0.1",
+
+  "permissions": [
+    "storage",
+    "tabs",
+    "identity",
+    "notifications",
+    "https://footnotes.spantree.net/",
+    "https://noted.jnauman.net/*",
+    "https://*.auth0.com/*"
+  ],
+
+  "background": {
+    "scripts": ["./env.js", "node_modules/auth0-chrome/dist/auth0chrome.min.js", "js/AuthProcessor.js"],
+    "persistent": false
+  },
+
+  "options_page": "options.html",
+
+  "browser_action": {
+    "default_title": "Spantree Footnotes",
+    "default_icon": "images/icon19.png",
+    "default_popup": "popup.html"
+  }
+}

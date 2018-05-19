@@ -1,0 +1,32 @@
+<html>
+
+<head>
+  <style>
+    body {
+      min-width: 357px;
+      overflow-x: hidden;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+
+<body>
+  We're using Auth0 for registration now! If you haven't yet authorized our app, do so with the application popup.
+  <div class="input-group">
+    <label for="back-end">Enter the address of the back end:</label>
+    <input id="back-end" type "text"/>
+  </div>
+
+  <div class="input-group">
+    <input type="button" value="Save Changes and Close" id="save" />
+  </div>
+
+  <span id="status"></span>
+  <script src="./env.js"></script>
+  <script src="js/options.js"></script>
+</body>
+
+</html>
