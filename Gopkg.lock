@@ -2,22 +2,16 @@
 
 
 [[projects]]
-  name = "github.com/apex/go-apex"
-  packages = [".","dynamo"]
-  revision = "338ee0137bc07a472789968021e66c5df905fc26"
-  version = "v1.0.0"
-
-[[projects]]
   name = "github.com/aws/aws-lambda-go"
-  packages = ["lambda","lambda/messages","lambdacontext"]
+  packages = ["events","lambda","lambda/messages","lambdacontext"]
   revision = "4d30d0ff60440c2d0480a15747c96ee71c3c53d4"
   version = "v1.2.0"
 
 [[projects]]
   name = "github.com/aws/aws-sdk-go"
   packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","internal/sdkio","internal/sdkrand","internal/shareddefaults","private/protocol","private/protocol/json/jsonutil","private/protocol/jsonrpc","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/xml/xmlutil","service/dynamodb","service/dynamodb/dynamodbattribute","service/sts"]
-  revision = "31a85efbe3bc741eb539d6310c8e66030b7c5cb7"
-  version = "v1.13.47"
+  revision = "5f796043d63bfddca929cfbcffce01e5a894aad5"
+  version = "v1.13.52"
 
 [[projects]]
   name = "github.com/go-ini/ini"
@@ -63,6 +57,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2c690833ac359387c9c8df33eb6d0cf1aad5f3609cd3a5f797c59e25cc541943"
+  inputs-digest = "20f3e4d1ea48b2712410e43209243e48310f0cb91823f4b4c54680f8ae260e33"
   solver-name = "gps-cdcl"
   solver-version = 1
