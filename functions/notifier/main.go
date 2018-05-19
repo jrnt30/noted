@@ -16,7 +16,7 @@ func main() {
 	lambda.Start(handleDyanmoEvent)
 }
 
-func handleDyanmoEvent(e dynamo.DynamoEvent) error {
+func handleDyanmoEvent(e dynamo.Event) error {
 	if !notifier.enabled {
 		return nil
 	}
