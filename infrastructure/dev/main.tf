@@ -20,7 +20,7 @@ terraform {
 }
 
 module "dynamo-table" {
-  source = "../modules/"
+  source = "../modules/dynamo"
 
   apex_environment   = "${var.apex_environment}"
   aws_region         = "${var.aws_region}"

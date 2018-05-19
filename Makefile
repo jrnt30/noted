@@ -22,4 +22,8 @@ check: $(GOMETA)
 	$(GOMETA) --concurrency=$(METALINTER_CONCURRENCY) --deadline=$(METALINTER_DEADLINE)s ./... --vendor --linter='errcheck:errcheck:-ignore=net:Close' --cyclo-over=20 \
     		--linter='vet:go tool vet -composites=false {paths}:PATH:LINE:MESSAGE' --disable=interfacer --dupl-threshold=50
 
-.PHONY: fmt check
+.PHONY: fmt check tf-plan-%
+
+tf-plan:
+	apex infra init
+	apex infra plan

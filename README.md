@@ -40,4 +40,7 @@ The project has lingered and not gotten much attention meanwhile the landscape h
 - Run `cd infrastructure/apex && terraform init && terraofrm  plan`
 - Validate and then run `terraform apply` to get the "basic" Lambda role to use
 - Update `project.json` with proper ARN
--
+
+
+# Issues
+- Role assumption I can't get working properly with Apex.  Tried updating the AWS SDK to get a fix, but even setting the `AWS_SDK_LOAD_CONFIG=true`, setting an explicit `AWS_REGION` and `AWS_PROFILE` I still am having issues with some of the commands.
