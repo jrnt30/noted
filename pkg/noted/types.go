@@ -5,12 +5,12 @@ import "time"
 type Link struct {
 	ID          string    `json:"id" dynamodbav:"ID"`
 	URL         string    `json:"url" dynamodbav:"URL"`
-	CreatedBy   string    `json:"user_id" dynamodbav:"CreatedBy"`
-	Title       string    `json:"user_title" dynamodbav:"Title"`
-	Description string    `json:"user_description" dynamodbav:"Description"`
-	CreatedAt   time.Time `json:"created_at" dynamodbav:"CreatedAt"`
-	UpdatedAt   time.Time `json:"updated_at" dynamodbav:"UpdatedAt"`
-	DeletedAt   time.Time `json:"deleted_at" dynamodbav:"DeletedAt"`
+	CreatedBy   string    `json:"userId" dynamodbav:"CreatedBy"`
+	Title       string    `json:"userTitle" dynamodbav:"Title"`
+	Description string    `json:"userDescription" dynamodbav:"Description"`
+	CreatedAt   time.Time `json:"createdAt" dynamodbav:"CreatedAt"`
+	UpdatedAt   time.Time `json:"updatedAt" dynamodbav:"UpdatedAt"`
+	DeletedAt   time.Time `json:"deletedAt" dynamodbav:"DeletedAt"`
 }
 
 type User struct {
