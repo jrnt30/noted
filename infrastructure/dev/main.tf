@@ -1,14 +1,20 @@
 variable "aws_region" {}
 variable "apex_environment" {}
 variable "apex_function_role" {}
+
 variable "apex_function_arns" {
   type = "map"
 }
 
+provider "aws" {
+  version = "~> 1.19"
+  region  = "${var.aws_region}"
+}
+
 terraform {
   backend "s3" {
-    bucket = "noted-apex-tf-state"
-    key    = "dev/us-east-1/noted"
+    bucket = "dev-noted-apex"
+    key    = "us/us-east-1/noted"
     region = "us-east-1"
   }
 }

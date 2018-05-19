@@ -4,6 +4,7 @@ This was an attempt to emulate a small subset of functionality of a bookmarking 
 The project has lingered and not gotten much attention meanwhile the landscape has changed.  Worth considering using something else in the future.
 
 # Roadmap
+- API Gateway, Custom Domain, Authorizer, etc. setup for lambdas
 - Tie in user management/authentication with Auth0 & persist data
 - New Chrome extension that uses Auth0 oauth to enable login/signup flow
 - Additional lambda to compile and send "new" links to registered users
@@ -32,3 +33,11 @@ The project has lingered and not gotten much attention meanwhile the landscape h
   - Is there a way to mutate the request or redirect based upon attributes (logged in vs. logged out), admin vs. user, etc.?
 - Is a redirect or re-routing possible here?
 - What are the dimensions of the `context` that we could leverage for customization?  Are these cached?
+
+
+# Deployment Notes:
+- Customize the S3 backend configuration in `infrastructure/apex`
+- Run `cd infrastructure/apex && terraform init && terraofrm  plan`
+- Validate and then run `terraform apply` to get the "basic" Lambda role to use
+- Update `project.json` with proper ARN
+-
