@@ -23,7 +23,3 @@ check: $(GOMETA)
     		--linter='vet:go tool vet -composites=false {paths}:PATH:LINE:MESSAGE' --disable=interfacer --dupl-threshold=50
 
 .PHONY: fmt check tf-plan-%
-
-tf-plan:
-	apex infra init
-	apex infra plan

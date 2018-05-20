@@ -1,17 +1,29 @@
-resource "aws_api_gateway_rest_api" "example" {
+resource "aws_api_gateway_rest_api" "noted_api" {
   name        = "${var.apex_environment}-noted-api-gateway"
   description = "API Gateway for noted"
 }
 
-resource "aws_api_gateway_resource" "proxy" {
-  rest_api_id = "${aws_api_gateway_rest_api.example.id}"
-  parent_id   = "${aws_api_gateway_rest_api.example.root_resource_id}"
-  path_part   = "{proxy+}"
+output "api_gateway_id" {
+  value = "${aws_api_gateway_rest_api.noted_api.id}"
 }
 
-resource "aws_api_gateway_method" "proxy" {
-  rest_api_id   = "${aws_api_gateway_rest_api.example.id}"
-  resource_id   = "${aws_api_gateway_resource.proxy.id}"
-  http_method   = "ANY"
-  authorization = "NONE"
+output "api_gateway_root_resource_id" {
+  value = "${aws_api_gateway_rest_api.noted_api.root_resource_id}"
 }
+
+# DNS
+# Domain
+
+
+# https://www.terraform.io/docs/providers/aws/guides/serverless-with-aws-lambda-and-api-gateway.html
+# https://medium.com/@MrPonath/terraform-and-aws-api-gateway-a137ee48a8ac
+
+
+# Auth
+# aws_api_gateway_authorizer
+
+
+# aws_api_gateway_deployment
+# aws_api_gateway_domain_name
+# aws_api_gateway_base_path_mapping
+

@@ -9,7 +9,7 @@ resource "aws_dynamodb_table" "links_data" {
     type = "S"
   }
 
-  stream_enabled = true
+  stream_enabled   = true
   stream_view_type = "NEW_IMAGE"
 
   tags {
