@@ -23,10 +23,17 @@ terraform {
   }
 }
 
+data "aws_caller_identity" "account_info" {}
+
+locals {
+  account_id = "${data.aws_caller_identity.account_info.account_id}"
+}
+
 module "dynamo-table" {
   source = "../modules/dynamo"
 
-  aws_region = "${var.aws_region}"
+  aws_region     = "${var.aws_region}"
+  aws_account_id = "${local.account_id}"
 
   apex_environment    = "${var.apex_environment}"
   apex_function_role  = "${var.apex_function_role}"
@@ -37,7 +44,8 @@ module "dynamo-table" {
 module "api-gateway" {
   source = "../modules/apigateway"
 
-  aws_region = "${var.aws_region}"
+  aws_region     = "${var.aws_region}"
+  aws_account_id = "${local.account_id}"
 
   apex_environment    = "${var.apex_environment}"
   apex_function_role  = "${var.apex_function_role}"
@@ -46,9 +54,10 @@ module "api-gateway" {
 }
 
 module "auth0-authorizer" {
-  source = "../modules/api-utils/lambda-authorizer"
+  source = "../modules/lambda-authorizer"
 
-  aws_region = "${var.aws_region}"
+  aws_region     = "${var.aws_region}"
+  aws_account_id = "${local.account_id}"
 
   apex_environment    = "${var.apex_environment}"
   apex_function_role  = "${var.apex_function_role}"
@@ -64,7 +73,9 @@ module "auth0-authorizer" {
 module "noted-apis" {
   source = "../modules/apis"
 
-  aws_region          = "${var.aws_region}"
+  aws_region     = "${var.aws_region}"
+  aws_account_id = "${local.account_id}"
+
   apex_environment    = "${var.apex_environment}"
   apex_function_role  = "${var.apex_function_role}"
   apex_function_arns  = "${var.apex_function_arns}"
@@ -72,6 +83,6 @@ module "noted-apis" {
 
   api_gateway_id               = "${module.api-gateway.api_gateway_id}"
   api_gateway_root_resource_id = "${module.api-gateway.api_gateway_root_resource_id}"
-
+  api_gateway_role_arn         = "${module.api-gateway.api_gateway_role_arn}"
   auth0_api_gateway_authorizer = "${module.auth0-authorizer.authorizer_id}"
 }

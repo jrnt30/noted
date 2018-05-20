@@ -2,6 +2,8 @@ variable "aws_region" {
   description = "AWS Region to deploy resources to"
 }
 
+variable "aws_account_id" {}
+
 variable "apex_environment" {}
 variable "apex_function_role" {}
 

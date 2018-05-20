@@ -16,8 +16,6 @@ data "aws_lambda_function" "authorizer" {
   function_name = "${var.apex_function_names["${var.apex_function_name}"]}"
 }
 
-data "aws_caller_identity" "account_info" {}
-
 # Ensure API Gateway can call authorizer
 resource "aws_lambda_permission" "apigw_lambda" {
   statement_id  = "AllowExecutionFromAPIGateway-${var.apex_function_name}"
