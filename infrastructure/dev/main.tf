@@ -86,3 +86,15 @@ module "noted-apis" {
   api_gateway_role_arn         = "${module.api-gateway.api_gateway_role_arn}"
   auth0_api_gateway_authorizer = "${module.auth0-authorizer.authorizer_id}"
 }
+
+resource "aws_api_gateway_deployment" "dev" {
+  depends_on  = ["module.noted-apis"]
+  rest_api_id = "${module.api-gateway.api_gateway_id}"
+  stage_name  = "dev"
+}
+
+resource "aws_api_gateway_stage" "dev" {
+  rest_api_id   = "${module.api-gateway.api_gateway_id}"
+  stage_name    = "dev"
+  deployment_id = "${aws_api_gateway_deployment.dev.id}"
+}

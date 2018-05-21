@@ -59,8 +59,12 @@ output "api_gateway_role_arn" {
 # Domain
 # https://www.terraform.io/docs/providers/aws/guides/serverless-with-aws-lambda-and-api-gateway.html
 # https://medium.com/@MrPonath/terraform-and-aws-api-gateway-a137ee48a8ac
-# Auth
-# aws_api_gateway_authorizer
+
+
+# Serverless Examles
+# https://serverless.zone/express-to-aws-lambda-apex-edition-part-1-bcc11102feeb
+# https://serverless.zone/express-to-aws-lambda-apex-edition-part-2-53405a867b12
+# https://serverless.zone/express-to-aws-lambda-apex-edition-part-3-559e25b2e813
 
 
 # aws_api_gateway_deployment
