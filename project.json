@@ -3,7 +3,10 @@
   "description": "Simple bookmarking tool ",
   "memory": 128,
   "timeout": 5,
-  "role": "arn:aws:iam::817491895887:role/noted-apex_lambda_function",
-  "environment": {},
+  "role": "arn:aws:iam::515560697729:role/lambda-role",
+  "environment": {
+    "AUTH0_DOMAIN": "noted-apex.auth0.com",
+    "AUTH0_AUDIENCE": "6jIDO6xCEZ9Ne6c2f3fNjuY3Qu3IFrZe"
+  },
   "defaultEnvironment": "dev"
 }
