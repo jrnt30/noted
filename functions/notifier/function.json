@@ -1,0 +1,6 @@
+{
+  "environment": {
+    "SLACK_TOKEN": "REPLACE_ME",
+    "SLACK_CHANNEL": "REPLACE_ME"
+  }
+}

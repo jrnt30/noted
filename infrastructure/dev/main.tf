@@ -92,9 +92,3 @@ resource "aws_api_gateway_deployment" "dev" {
   rest_api_id = "${module.api-gateway.api_gateway_id}"
   stage_name  = "dev"
 }
-
-resource "aws_api_gateway_stage" "dev" {
-  rest_api_id   = "${module.api-gateway.api_gateway_id}"
-  stage_name    = "dev"
-  deployment_id = "${aws_api_gateway_deployment.dev.id}"
-}

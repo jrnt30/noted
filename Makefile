@@ -22,4 +22,16 @@ check: $(GOMETA)
 	$(GOMETA) --concurrency=$(METALINTER_CONCURRENCY) --deadline=$(METALINTER_DEADLINE)s ./... --vendor --linter='errcheck:errcheck:-ignore=net:Close' --cyclo-over=20 \
     		--linter='vet:go tool vet -composites=false {paths}:PATH:LINE:MESSAGE' --disable=interfacer --dupl-threshold=50
 
+local-chrome-extension:
+	@cd chrome-extension && \
+	pwd && \
+	npm install
+.PHONY: local-chrome-extension
+
+deploy-apex-terraform:
+	cd infrastructure/apex && \
+	terraform init && \
+	terraform apply
+.PHONY: deploy-apex-terraform
+
 .PHONY: fmt check tf-plan-%
