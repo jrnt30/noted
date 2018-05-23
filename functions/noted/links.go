@@ -9,8 +9,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	"github.com/jrnt30/noted-apex/pkg/noted"
 	"github.com/satori/go.uuid"
+
+	"github.com/jrnt30/noted/pkg/noted"
 )
 
 var _ noted.LinkProcessor = &DynamoLinkSaver{}

@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/aws/aws-lambda-go/lambda"
 
-	"github.com/jrnt30/noted-apex/pkg/dynamo"
+	"github.com/jrnt30/noted/pkg/dynamo"
 )
 
 var notifier SlackNotifier

@@ -29,7 +29,7 @@ local-chrome-extension:
 .PHONY: local-chrome-extension
 
 deploy-apex-terraform:
-	cd infrastructure/apex && \
+	cd apex/infrastructure/apex && \
 	terraform init && \
 	terraform apply
 .PHONY: deploy-apex-terraform

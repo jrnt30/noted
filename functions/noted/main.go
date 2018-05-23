@@ -8,7 +8,8 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/jrnt30/noted-apex/pkg/noted"
+
+	"github.com/jrnt30/noted/pkg/noted"
 )
 
 var ls DynamoLinkSaver

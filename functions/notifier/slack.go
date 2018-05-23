@@ -5,8 +5,9 @@ import (
 	"os"
 
 	"github.com/hashicorp/go-multierror"
-	"github.com/jrnt30/noted-apex/pkg/noted"
 	"github.com/nlopes/slack"
+
+	"github.com/jrnt30/noted/pkg/noted"
 )
 
 const (

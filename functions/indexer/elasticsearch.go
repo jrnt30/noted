@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/jrnt30/noted-apex/pkg/noted"
+	"github.com/jrnt30/noted/pkg/noted"
 )
 
 // EsIndexer is a stub class that will  implement another processor step
