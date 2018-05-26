@@ -42,7 +42,7 @@ SB.Post = (function() {
     var req = new XMLHttpRequest();
     req.open('POST', this.user.serviceUrl, true);
     req.setRequestHeader('Content-Type', 'application/json');
-    req.setRequestHeader('X-Auth-Token', "Bearer " + this.user.token);
+    req.setRequestHeader('Authorization', "Bearer " + this.user.token);
     req.onload = this.afterPost.bind(this);
     req.send(JSON.stringify(this.getLinkJson()));
   };

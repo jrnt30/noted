@@ -5,16 +5,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/jrnt30/noted-apex/pkg/noted"
+
+	"github.com/jrnt30/noted/pkg/noted"
 )
 
 var ls DynamoLinkSaver
 
 func init() {
-	ls = NewDynamoLinkSaver()
+	tableName := os.Getenv("DYNAMO_TABLE_NAME")
+	ls = NewDynamoLinkSaver(tableName)
 }
 
 func main() {

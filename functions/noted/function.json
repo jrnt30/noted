@@ -1,0 +1,5 @@
+{
+  "environment": {
+    "DYNAMO_TABLE_NAME": "dev-NotedLinks"
+  }
+}

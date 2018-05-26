@@ -5,8 +5,9 @@ import (
 	"os"
 
 	"github.com/hashicorp/go-multierror"
-	"github.com/jrnt30/noted-apex/pkg/noted"
 	"github.com/nlopes/slack"
+
+	"github.com/jrnt30/noted/pkg/noted"
 )
 
 const (
@@ -67,10 +68,7 @@ func convertToAttachment(link *noted.Link) slack.Attachment {
 
 // NewSlackNotifier leverages environment variables to load the
 // slack channel and token information to post
-func NewSlackNotifier() SlackNotifier {
-	token := os.Getenv(SLACK_TOKEN)
-	channel := os.Getenv(SLACK_CHANNEL)
-
+func NewSlackNotifier(token, channel string) SlackNotifier {
 	if len(token) == 0 || len(channel) == 0 {
 		fmt.Fprint(os.Stderr, "There was no configuration provided for Slack, skipping activiation")
 		return SlackNotifier{}

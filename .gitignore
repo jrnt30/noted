@@ -1,3 +1,5 @@
 .terraform
 .idea/
 main
+bins
+sam/deploys/
