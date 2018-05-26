@@ -29,7 +29,7 @@ This project assumes you have a few tools installed.
 
 ### Deploy the app
 - Customize the necessary configuration settings for deployment:
-  - `functions/notifier/function.json` - Update the Slack Token and Channel settings (NOTE: need to integrate something like SOPS w/ the Function Hooks in the future here to properly encrypt/decrypt these)
+  - `functions/notifier/function.json` - Update the Slack Token and Channel settings (NOTE: The value of the SLACK_TOKEN should be the ciphertext of a KMS encryption which your function has the ability to use)
 - Deploy the Functions
   - `apex deploy`
 - Deploy the API Gateway and other configuration

@@ -1,0 +1,158 @@
+# https://bryson3gps.wordpress.com/2018/01/29/building-aws-serverless-applications-part-2/
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    noted
+
+    Small bookmarking tool for sharing items in Slack with friends
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+    Function:
+        Timeout: 30
+    Api:
+        EndpointConfiguration: REGIONAL
+        Cors: "'*'"
+
+Resources:
+    NotedRestApi2:
+        Type: AWS::Serverless::Api
+        Properties:
+            Name: SwaggerImportTest
+            StageName: swag
+            DefinitionBody:
+              swagger: "2.0"
+              info:
+                version: "2018-05-23T02:02:48Z"
+                title: "dev2-noted-api-gateway"
+              host: "dev2.noted.jnauman.net"
+              schemes:
+              - "https"
+              paths:
+                "/link":
+                  post:
+                    responses: {}
+                    security:
+                    - auth0authorizer: []
+                    x-amazon-apigateway-integration:
+                      uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NotedAuthorizer.Arn}/invocations"
+                      passthroughBehavior: "when_no_match"
+                      httpMethod: "POST"
+                      type: "aws_proxy"
+                  options:
+                    consumes:
+                    - "application/json"
+                    produces:
+                    - "application/json"
+                    responses:
+                      "200":
+                        description: "200 response"
+                        schema:
+                          $ref: "#/definitions/Empty"
+                        headers:
+                          Access-Control-Allow-Origin:
+                            type: "string"
+                          Access-Control-Allow-Methods:
+                            type: "string"
+                          Access-Control-Allow-Headers:
+                            type: "string"
+                    x-amazon-apigateway-integration:
+                      responses:
+                        default:
+                          statusCode: "200"
+                          responseParameters:
+                            method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS,POST,PUT'"
+                            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                            method.response.header.Access-Control-Allow-Origin: "'*'"
+                      passthroughBehavior: "when_no_match"
+                      requestTemplates:
+                        application/json: "{ 'statusCode': 200 }"
+                      type: "mock"
+              securityDefinitions:
+                auth0authorizer:
+                  type: "apiKey"
+                  name: "Authorization"
+                  in: "header"
+                  x-amazon-apigateway-authtype: "custom"
+                  x-amazon-apigateway-authorizer:
+                    authorizerUri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NotedAuthorizer.Arn}/invocations"
+                    # authorizerResultTtlInSeconds: 300
+                    # identityValidationExpression: "bearer .+"
+                    type: "token"
+              definitions:
+                Empty:
+                  type: "object"
+                  title: "Empty Schema"
+
+    # Allows for the API Gateway to call the auth function
+    ApiGatewayAuthorizerRole:
+      Type: AWS::Lambda::Permission
+      DependsOn:
+      - NotedRestApi2
+      - NotedAuthorizer
+      Properties:
+        Action: lambda:InvokeFunction
+        FunctionName: !Ref NotedAuthorizer
+        Principal: apigateway.amazonaws.com
+
+    DynamoDBTable:
+        Type: AWS::DyamoDB::Table
+        Properties:
+          AttributeDefinitions:
+            - AttributeName: ID
+              AttributeType: S
+          KeySchema:
+            - AttributeName: ID
+              AttributeType: HASH
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+
+    NotedAuthorizer:
+        Type: AWS::Serverless::Function
+        Properties:
+            CodeUri: ../bins/
+            Handler: auth0authorizer
+            Runtime: go1.x
+            Policies:
+            - LambdaInvokePolicy:
+                FunctionName: !Ref "NotedLinkIngestion"
+
+    NotedLinkIngestion:
+        Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+        Properties:
+            CodeUri: ../bins/
+            Handler: noted
+            Runtime: go1.x
+
+    SlackNotifier:
+        Type: AWS::Serverless::Function
+        Properties:
+          CodeUri: ../bins/
+          Handler: notifier
+          Runtime: go1.x
+          KmsKeyArn: arn:aws:kms:us-east-1:515560697729:key/7821dd19-b916-4eee-b4e3-784c249440d3
+          Environment:
+            Variables:
+              SLACK_CHANNEL: button-test
+              SLACK_TOKEN: >-
+                AQICAHjUmv1C/rPFdSxN+8PRTtoKaiuLrsgOHpqL9PbKYdXK1wHCaLUNSOYhZPBoUz2mjpqkAAAAiTCBhgYJKoZIhvcNAQcGoHkwdwIBADByBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDP3C5ljjjg/XGxHXnAIBEIBF5W70wvnLYiN0zpbWrnmLGxOmBh2qUE641FEHwgvko95KjvMSbz5/DWWkqB5xmRNnOwP+7bxi/uFo16lzw/QS7mMcJ3I6
+          Events:
+            Stream:
+              Type: DynamoDB
+              Properties:
+                Stream: !GetAtt DynamoDBTable.StreamArn
+                BatchSize: 100
+                StartingPosition: TRIM_HORIZON
+
+Outputs:
+    NotedLinkIngestionAPI:
+      Description: "API Gateway endpoint URL for Prod stage for Link function"
+      Value: !Sub "https://${NotedRestApi2.Deployment}.execute-api.${AWS::Region}.amazonaws.com/${NotedRestApi2.Stage}/link/"
+    NotedLinkIngestionFunction:
+      Description: "Hello World Lambda Function ARN"
+      Value: !GetAtt NotedLinkIngestion.Arn
+    NotedLinkIngestionIamRole:
+      Description: "Implicit IAM Role created for Hello World function"
+      Value: !GetAtt NotedLinkIngestion.Arn
