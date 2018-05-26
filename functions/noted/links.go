@@ -19,8 +19,9 @@ var _ noted.LinkProcessor = &DynamoLinkSaver{}
 // DynamoLinkSaver is responsible for persisting noted.Link
 // data to it's Dynamo backing table
 type DynamoLinkSaver struct {
-	enabled bool
-	dynamo  *dynamodb.DynamoDB
+	enabled   bool
+	tableName string
+	dynamo    *dynamodb.DynamoDB
 }
 
 // Enabled indicates if link saving is enabled or not
@@ -41,7 +42,7 @@ func (d *DynamoLinkSaver) ProcessLink(link *noted.Link) error {
 	}
 
 	res, err := d.dynamo.PutItem(&dynamodb.PutItemInput{
-		TableName: aws.String("dev-NotedLinks"),
+		TableName: aws.String(d.tableName),
 		Item:      av,
 	})
 
@@ -61,11 +62,12 @@ func (d *DynamoLinkSaver) ProcessLink(link *noted.Link) error {
 
 // NewDynamoLinkSaver creates a new DynamoLinkSaver
 // with defaults
-func NewDynamoLinkSaver() DynamoLinkSaver {
+func NewDynamoLinkSaver(tableName string) DynamoLinkSaver {
 	session, err := session.NewSession()
 
 	return DynamoLinkSaver{
-		enabled: err != nil,
-		dynamo:  dynamodb.New(session),
+		tableName: tableName,
+		enabled:   err != nil,
+		dynamo:    dynamodb.New(session),
 	}
 }

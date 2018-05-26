@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -15,7 +16,8 @@ import (
 var ls DynamoLinkSaver
 
 func init() {
-	ls = NewDynamoLinkSaver()
+	tableName := os.Getenv("DYNAMO_TABLE_NAME")
+	ls = NewDynamoLinkSaver(tableName)
 }
 
 func main() {

@@ -1,6 +1,11 @@
 # Overview
 This was an attempt to emulate a small subset of functionality of a bookmarking tool in Lambda using AWS SAM CLI.
 
+# Useful Links
+- [Custom Authorizers](https://bryson3gps.wordpress.com/2018/01/29/building-aws-serverless-applications-part-2/)
+
+# Issues
+- [Templating out inline swagger](https://github.com/awslabs/serverless-application-model/issues/203)
 
 # SAM notes:
 - Discovers your local AWS configuration and will inject those credentials into the Lambda execution environment so things like `session.New` in your handler code "just work".  Very handy!
