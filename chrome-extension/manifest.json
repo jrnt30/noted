@@ -12,7 +12,7 @@
     "identity",
     "notifications",
     "https://footnotes.spantree.net/",
-    "https://noted.jnauman.net/*",
+    "https://*.noted.jnauman.net/*",
     "https://*.auth0.com/*"
   ],
 

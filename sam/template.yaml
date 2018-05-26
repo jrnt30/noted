@@ -19,14 +19,14 @@ Resources:
     NotedRestApi2:
         Type: AWS::Serverless::Api
         Properties:
-            Name: SwaggerImportTest
-            StageName: swag
+            Name: sam-managed-api
+            StageName: dev
             DefinitionBody:
               swagger: "2.0"
               info:
                 version: "2018-05-23T02:02:48Z"
-                title: "dev2-noted-api-gateway"
-              host: "dev2.noted.jnauman.net"
+                title: "dev-noted-api-gateway"
+              host: "dev.noted.jnauman.net/sam"
               schemes:
               - "https"
               paths:
@@ -97,17 +97,19 @@ Resources:
         Principal: apigateway.amazonaws.com
 
     DynamoDBTable:
-        Type: AWS::DyamoDB::Table
+        Type: AWS::DynamoDB::Table
         Properties:
           AttributeDefinitions:
             - AttributeName: ID
               AttributeType: S
           KeySchema:
             - AttributeName: ID
-              AttributeType: HASH
+              KeyType: HASH
           ProvisionedThroughput:
             ReadCapacityUnits: 5
             WriteCapacityUnits: 5
+          StreamSpecification:
+            StreamViewType: NEW_IMAGE
 
     NotedAuthorizer:
         Type: AWS::Serverless::Function
@@ -115,6 +117,10 @@ Resources:
             CodeUri: ../bins/
             Handler: auth0authorizer
             Runtime: go1.x
+            Environment:
+              Variables:
+                AUTH0_DOMAIN: "noted-apex.auth0.com"
+                AUTH0_AUDIENCE: "6jIDO6xCEZ9Ne6c2f3fNjuY3Qu3IFrZe"
             Policies:
             - LambdaInvokePolicy:
                 FunctionName: !Ref "NotedLinkIngestion"
